@@ -8,13 +8,16 @@ const add = () => stack.add({
     b: Math.random() * 255
 })
 
+document.addEventListener("click", add)
+document.addEventListener("keydown", stack.remove)
+
 function setup() {
     createCanvas(HEIGHT, WIDTH);
     background(255);
     frameRate(25)
-    setInterval(add, 1000)
 }
 
 function draw() {
+    background(255);
     stack.draw()
 }
