@@ -1,5 +1,6 @@
 import MyWorld from "./my-world.js"
 import Stack from "./stack.js"
+import Queue from "./queue.js"
 import Listeners from "./listeners.js"
 
 const listeners = new Listeners()
@@ -15,8 +16,10 @@ function sketch(p5) {
     Bodies = Matter.Bodies
     
     const engine = Engine.create()
-    const myWorld = new MyWorld(Matter, engine, p5)
-    const stack = new Stack(WIDTH, HEIGHT, myWorld, listeners)
+    const myWorld = new MyWorld(Matter, engine, p5, listeners)
+
+    listeners.selectStack = () => new Stack(WIDTH, HEIGHT, myWorld, listeners)
+    listeners.selectQueue = () => new Queue(WIDTH, HEIGHT, myWorld, listeners)
 
     p5.setup = function() {
         p5.createCanvas(WIDTH, HEIGHT)

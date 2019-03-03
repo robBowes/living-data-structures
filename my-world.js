@@ -21,12 +21,13 @@ const render = p5 => ({
 })
 
 export default class MyWorld {
-    constructor(Matter, engine, p5) {
+    constructor(Matter, engine, p5, listeners) {
         this.Matter = Matter
         this.engine = engine
         this.p5 = p5
         this.render = render(p5)
         this.particles = []
+        listeners.clear = this.clear.bind(this)
     }
     draw() {
         this.engine.world.constraints.forEach(constraint => this.render[constraint.label](constraint))
@@ -58,8 +59,13 @@ export default class MyWorld {
         this.engine.world.constraints = this.engine.world.constraints.filter(c => c.bodyA.id !== node.body.id && c.bodyB.id !== node.body.id)
         const deleteNode = node => () => {
             this.addBurst(node.body.position)
-            this.engine.world.bodies = this.engine.world.bodies.filter(b => b.id !== node.body.id)
+            // this.engine.world.bodies = this.engine.world.bodies.filter(b => b.id !== node.body.id)
+            this.Matter.Composite.remove(this.engine.world, node.body)
         }
         setTimeout(deleteNode(node), 500)
+    }
+    clear() {
+        this.engine.world.bodies = []
+        this.engine.world.constraints = []
     }
 }
