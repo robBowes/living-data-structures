@@ -1,35 +1,31 @@
-/* global ellipse, var2 */
-const HEIGHT = window.innerWidth * 0.9
-const WIDTH = window.innerHeight * 0.9
+import MyWorld from "./MyWorld.js"
+import Stack from "./Stack.js"
 
-const Engine = Matter.Engine,
+function sketch(p5) {
+    const HEIGHT = window.innerWidth * 0.9
+    const WIDTH = window.innerHeight * 0.9
+    const Engine = Matter.Engine,
     World = Matter.World,
     Bodies = Matter.Bodies
+    
+    const engine = Engine.create()
+    const myWorld = new MyWorld(Matter, engine, p5)
+    const stack = new Stack(HEIGHT, WIDTH, myWorld, p5)
 
-let engine = Engine.create()
+    document.addEventListener("click", () => stack.add())
+    document.addEventListener("keydown", stack.remove)
 
-const myWorld = new MyWorld(Matter, engine)
-
-
-const stack = new Stack(HEIGHT, WIDTH, myWorld)
-
-const add = () => stack.add({
-    r: Math.random() * 255,
-    g: Math.random() * 255,
-    b: Math.random() * 255
-})
-
-document.addEventListener("click", add)
-document.addEventListener("keydown", stack.remove)
-
-function setup() {
-    createCanvas(HEIGHT, WIDTH)
-    background(0)
-    frameRate(25)
-    Engine.run(engine)
+    p5.setup = function() {
+        p5.createCanvas(HEIGHT, WIDTH)
+        p5.background(0)
+        p5.frameRate(25)
+        Engine.run(engine)
+    }
+    
+    p5.draw = function() {
+        p5.background(0);
+        myWorld.draw()
+    }
 }
 
-function draw() {
-    background(0);
-    myWorld.draw()
-}
+new p5(sketch)
