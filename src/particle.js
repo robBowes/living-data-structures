@@ -4,6 +4,7 @@ export default class Particle {
         this.direction = props.direction
         this.momentum = props.momentum
         this.energy = Math.random() * 100
+        this.color = props.color
     }
     update() {
         this.position.x = this.position.x + this.direction.x

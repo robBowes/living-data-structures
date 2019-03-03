@@ -3,9 +3,10 @@ import Particle from "./particle.js"
 const PI = Math.PI
 
 export default class Burst {
-    constructor(position) {
+    constructor(position, color) {
         this.x = position.x
         this.y = position.y
+        this.color = color
     }
     createParticles() {
         const n = 100;
@@ -21,7 +22,8 @@ export default class Burst {
             momentum: {
                 x: 0.98,
                 y: 0.98
-            }
+            },
+            color: this.color
         }))
     }
 }

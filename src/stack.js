@@ -14,44 +14,50 @@ class Node {
 
 export default class Stack {
     constructor(height, width, world, listeners) {
-        this.root = null
         this.screenHeight = height
         this.screenWidth = width
         this.world = world
         this.rootX = this.screenHeight / 2
         this.rootY = 0
         listeners.KeyR = this.remove.bind(this)
-        listeners.KeyA = this.add.bind(this)
+        listeners.KeyA = this.KeyA.bind(this)
+        this.root = null
+        this.anchor = this.world.addAnchor(this.rootX, this.rootY)
+    }
+    KeyA() {
+        const color = () => Math.round(Math.random()*255)
+        this.add([
+            color(),
+            color(),
+            color(),
+        ])
     }
     add(value) {
         if (!this.root) {
             this.root = new Node(value, null, null, {
-                position: {
-                    x: this.rootX,
-                    y: this.rootY
-                },
                 direction: {
                     x: 0,
                     y: 1
                 }
             })
             this.world.addNode(this.root, {
-                isStatic: true
-            })
+                x: this.rootX,
+                y: this.rootY
+            });
+            this.world.linkNodes(this.anchor, this.root)
         } else {
             const tail = this.findTail(this.root)
             const node = new Node(value, null, tail, {
-                position: {
-                    x: tail.body.position.x + 20 * tail.direction.x,
-                    y: tail.body.position.y + 20 * tail.direction.y
-                },
                 direction: {
                     x: random1(),
                     y: random1()
                 }
             })
             tail.next = node
-            this.world.addNode(node)
+            this.world.addNode(node,{
+                x: tail.body.position.x + 20 * tail.direction.x,
+                y: tail.body.position.y + 20 * tail.direction.y
+            })
             this.world.linkNodes(tail, node)
         }
     }

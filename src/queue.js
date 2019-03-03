@@ -22,6 +22,7 @@ export default class Queue {
         this.rootY = 0
         listeners.KeyR = this.pop.bind(this)
         listeners.KeyA = this.push.bind(this)
+        this.anchor = this.world.addAnchor(this.rootX, this.rootY)
     }
     push(value) {
         if (!this.root) {
@@ -60,22 +61,10 @@ export default class Queue {
     }
     pop() {
         if (!this.root) return
-        const temp = this.root
-        const newRoot = this.root.next
-        this.root = newRoot
-        this.root.previous = null
-        this.world.Matter.Body.setPosition(temp.body, {
-            x: this.rootX + 10,
-            y: this.rootY
-        })
-        this.root.body.position = {
-            x: this.rootX,
-            y: this.rootY
-        }
-        this.world.Matter.Body.setStatic(this.root.body, true)
-        this.world.Matter.Body.setStatic(temp.body, false)
-        this.world.removeNode(temp)
-        return temp
+        const tail = this.findTail(this.root)
+        this.world.removeNode(tail)
+        tail.previous.next = null
+        return tail
     }
     findTail(node) {
         if (!node.next) return node
