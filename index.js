@@ -1,5 +1,5 @@
-import MyWorld from "./MyWorld.js"
-import Stack from "./Stack.js"
+import MyWorld from "./my-world.js"
+import Stack from "./stack.js"
 
 function sketch(p5) {
     const HEIGHT = window.innerWidth * 0.9
