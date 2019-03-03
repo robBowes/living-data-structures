@@ -2,7 +2,6 @@ function random1() {
     return Math.random() - 0.5
 }
 
-
 class Node {
     constructor(value, next, previous, props) {
         this.value = value
@@ -14,14 +13,15 @@ class Node {
 }
 
 export default class Stack {
-    constructor(height, width, world) {
+    constructor(height, width, world, listeners) {
         this.root = null
         this.screenHeight = height
         this.screenWidth = width
         this.world = world
         this.rootX = this.screenHeight / 2
         this.rootY = 0
-        this.remove = this.remove.bind(this)
+        listeners.KeyR = this.remove.bind(this)
+        listeners.KeyA = this.add.bind(this)
     }
     add(value) {
         if (!this.root) {

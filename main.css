@@ -1,5 +1,39 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: black;
-    display: flex;
     justify-content: space-around;
+    font-family: 'Cutive', serif;
+    color: white;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+p {
+    font-family: 'Raleway', sans-serif;
+}
+
+
+button {
+    font-family: 'Raleway', sans-serif;
+    border: none;
+    border-radius: 5px;
+    background-color: lightgray;
+    color: black;
+    padding: 4px;
+}
+
+#sketch {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.data-structure-select {
+    margin: 4px 16px;
 }

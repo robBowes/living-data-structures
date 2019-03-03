@@ -1,2 +1,4 @@
 # Living Data Structures
-## Implementing data structures in vanilla js and animating them using the p5 library
+## Implementing data structures in vanilla js
+
+This project aims to animate the classic computer science abstract data structures in p5 with the matter-js physics engine. View the project at https://robbowes.github.io/living-data-structures/

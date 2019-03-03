@@ -1,22 +1,25 @@
 import MyWorld from "./my-world.js"
 import Stack from "./stack.js"
+import Listeners from "./listeners.js"
+
+const listeners = new Listeners()
+
+const canvas = document.querySelector("#sketch")
+const canvasAttrs = canvas.getBoundingClientRect()
 
 function sketch(p5) {
-    const HEIGHT = window.innerWidth * 0.9
-    const WIDTH = window.innerHeight * 0.9
+    const HEIGHT = canvasAttrs.height
+    const WIDTH = canvasAttrs.width
     const Engine = Matter.Engine,
     World = Matter.World,
     Bodies = Matter.Bodies
     
     const engine = Engine.create()
     const myWorld = new MyWorld(Matter, engine, p5)
-    const stack = new Stack(HEIGHT, WIDTH, myWorld, p5)
-
-    document.addEventListener("click", () => stack.add())
-    document.addEventListener("keydown", stack.remove)
+    const stack = new Stack(WIDTH, HEIGHT, myWorld, listeners)
 
     p5.setup = function() {
-        p5.createCanvas(HEIGHT, WIDTH)
+        p5.createCanvas(WIDTH, HEIGHT)
         p5.background(0)
         p5.frameRate(25)
         Engine.run(engine)
@@ -28,4 +31,4 @@ function sketch(p5) {
     }
 }
 
-new p5(sketch)
+new p5(sketch, canvas)
