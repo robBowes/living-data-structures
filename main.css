@@ -12,6 +12,11 @@ body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+}
+
+h2 {
+    font-size: 1.2em;
 }
 
 p {
@@ -34,9 +39,13 @@ button {
 }
 
 .data-structure-select {
-    margin: 4px 0px;
+    margin: 1.5em 0;
 }
 
 .header {
     margin: 2.5%;
+}
+
+.title {
+    margin: 0 0 32px;
 }

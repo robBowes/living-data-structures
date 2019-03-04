@@ -16,6 +16,7 @@ export default class Listeners {
 
         document.querySelector(".select.queue").addEventListener("click", event => {
             if (this.selectQueue) {
+                this.showDescription("queue")
                 this.selectQueue()
             }
             this.clear()
