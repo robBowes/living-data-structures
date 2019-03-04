@@ -16,10 +16,16 @@ function sketch(p5) {
     Bodies = Matter.Bodies
     
     const engine = Engine.create()
-    const myWorld = new MyWorld(Matter, engine, p5, listeners)
+    let myWorld 
 
-    listeners.selectStack = () => new Stack(WIDTH, HEIGHT, myWorld, listeners)
-    listeners.selectQueue = () => new Queue(WIDTH, HEIGHT, myWorld, listeners)
+    listeners.selectStack = () => {
+        myWorld = new MyWorld(Matter, engine, p5, listeners, WIDTH, HEIGHT)
+        new Stack(myWorld, listeners)
+    }
+    listeners.selectQueue = () => {
+        myWorld = new MyWorld(Matter, engine, p5, listeners,WIDTH, HEIGHT)
+        new Queue(myWorld, listeners)
+    }
 
     p5.setup = function() {
         p5.createCanvas(WIDTH, HEIGHT)
@@ -30,7 +36,9 @@ function sketch(p5) {
     
     p5.draw = function() {
         p5.background(0);
-        myWorld.draw()
+        if (myWorld) {
+            myWorld.draw()
+        }
     }
 }
 

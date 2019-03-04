@@ -6,11 +6,11 @@ export default class Particle {
         this.energy = Math.random() * 100
         this.color = props.color
     }
-    update() {
-        this.position.x = this.position.x + this.direction.x
-        this.position.y = this.position.y + this.direction.y
-        this.direction.x = this.direction.x * this.momentum.x
-        this.direction.y = this.direction.y * this.momentum.y
-        this.energy--
+    static update(particle) {
+        particle.position.x = particle.position.x + particle.direction.x
+        particle.position.y = particle.position.y + particle.direction.y
+        particle.direction.x = particle.direction.x * particle.momentum.x
+        particle.direction.y = particle.direction.y * particle.momentum.y
+        particle.energy--
     }
 }

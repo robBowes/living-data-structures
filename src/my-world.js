@@ -1,4 +1,5 @@
 import Burst from "./burst.js"
+import Particle from './particle.js'
 
 
 const render = p5 => ({
@@ -22,7 +23,7 @@ const render = p5 => ({
 })
 
 export default class MyWorld {
-    constructor(Matter, engine, p5, listeners) {
+    constructor(Matter, engine, p5, listeners, width, height) {
         this.Matter = Matter
         this.engine = engine
         this.p5 = p5
@@ -31,16 +32,24 @@ export default class MyWorld {
         listeners.clear = this.clear.bind(this)
         this.nodes = []
         this.constraints = []
+        this.width = width
+        this.height = height
+        this.addAnchor.bind(this)
     }
     draw() {
         this.engine.world.constraints.forEach(constraint => this.render[constraint.label](constraint))
         this.nodes.forEach(node => this.render[node.body.label](node))
-        this.particles.forEach(particle => particle.update())
-        this.particles.forEach(particle => this.render.particle(particle))
-        this.particles = this.particles.filter(particle => particle.energy > 0)
+        const drawParticle = particle => {
+            Particle.update(particle)
+            this.render.particle(particle)
+        }
+        this.particles.forEach(drawParticle)
+        if (this.p5.frameCount % 5 === 0) {
+            this.particles = this.particles.filter(particle => particle.energy > 0)
+        }
     }
-    addNode(node, position, options) {
-        const body = this.Matter.Bodies.circle(position.x, position.y, 10, options)
+    addNode(node, anchor) {
+        const body = this.Matter.Bodies.circle(this.p5.mouseX, this.p5.mouseY, 10)
         this.Matter.World.add(this.engine.world, body)
         node.body = body
         this.nodes = [...this.nodes, node]
@@ -49,28 +58,43 @@ export default class MyWorld {
         const burst = new Burst(position, color)
         this.particles = [...this.particles, ...burst.createParticles()]
     }
-    addAnchor(x, y) {
-        const body = this.Matter.Bodies.circle(x, y, 10, {isStatic: true})
+    addAnchor() {
+        const body = this.Matter.Bodies.circle(this.width / 2, 0, 10, {isStatic: true})
         this.Matter.World.add(this.engine.world, body)
-        return {body}
+        this.anchor = body
+    }
+    linkToAnchor(body) {
+        this.addAnchor()
+        console.log(this.anchor);
+        const constraint = this.Matter.Constraint.create({
+            bodyA: body.body,
+            bodyB: this.anchor,
+            damping: 0.1,
+            length: 20,
+            stiffness: 0.3,
+        })
+        this.Matter.World.add(this.engine.world, constraint)
     }
     linkNodes(first, second) {
         const constraint = this.Matter.Constraint.create({
             bodyA: first.body,
             bodyB: second.body,
-            damping: 0.05,
+            damping: 0.1,
             length: 20,
-            stiffness: 0.2,
+            stiffness: 0.3,
         })
         this.Matter.World.add(this.engine.world, constraint)
     }
     removeNode(node) {
         this.engine.world.constraints = this.engine.world.constraints.filter(c => c.bodyA.id !== node.body.id && c.bodyB.id !== node.body.id)
         const deleteNode = node => () => {
-            this.addBurst(node.body.position, node.value)
-            this.nodes = this.nodes.filter(n => n !== node)
-            this.Matter.Composite.remove(this.engine.world, node.body)
+            if (this.nodes.length) {
+                this.addBurst(node.body.position, node.value)
+                this.nodes = this.nodes.filter(n => n !== node)
+                this.Matter.Composite.remove(this.engine.world, node.body)
+            }
         }
+        // this.anchor.
         setTimeout(deleteNode(node), 500)
     }
     clear() {

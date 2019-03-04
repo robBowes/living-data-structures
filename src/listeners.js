@@ -14,12 +14,12 @@ export default class Listeners {
             }
         })
 
-        // document.querySelector(".select.queue").addEventListener("click", event => {
-        //     if (this.selectQueue) {
-        //         this.selectQueue()
-        //     }
-        //     this.clear()
-        // })
+        document.querySelector(".select.queue").addEventListener("click", event => {
+            if (this.selectQueue) {
+                this.selectQueue()
+            }
+            this.clear()
+        })
         document.querySelector(".select.stack").addEventListener("click", event => {
             if (this.selectStack) {
                 this.showDescription("stack")
