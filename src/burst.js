@@ -1,12 +1,13 @@
 import Particle from "./particle.js"
 
-const PI = Math.PI
+const {PI, random, sin, cos} = Math
 
 export default class Burst {
     constructor(position, color) {
         this.x = position.x
         this.y = position.y
         this.color = color
+        this.particles = this.createParticles();
     }
     createParticles() {
         const n = 100;
@@ -16,8 +17,8 @@ export default class Burst {
                 y: this.y
             },
             direction: {
-                x: Math.random() * 5 * Math.sin(2 * PI / (i - (n / 2))),
-                y: Math.random() * 5 * Math.cos(2 * PI / (i - (n / 2)))
+                x: random() * 5 * sin(2 * PI / (i - (n / 2))),
+                y: random() * 5 * cos(2 * PI / (i - (n / 2)))
             },
             momentum: {
                 x: 0.98,

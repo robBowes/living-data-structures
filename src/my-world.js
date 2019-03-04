@@ -16,8 +16,10 @@ const render = p5 => ({
         p5.stroke(255)
         p5.line(bodyA.position.x, bodyA.position.y, bodyB.position.x, bodyB.position.y)
     },
+    burst(burst) {
+        p5.stroke(burst.color)
+    },
     particle(particle) {
-        p5.stroke(particle.color)
         p5.point(particle.position.x, particle.position.y)
     }
 })
@@ -28,7 +30,7 @@ export default class MyWorld {
         this.engine = engine
         this.p5 = p5
         this.render = render(p5)
-        this.particles = []
+        this.bursts = []
         listeners.clear = this.clear.bind(this)
         this.nodes = []
         this.constraints = []
@@ -43,9 +45,15 @@ export default class MyWorld {
             Particle.update(particle)
             this.render.particle(particle)
         }
-        this.particles.forEach(drawParticle)
-        if (this.p5.frameCount % 5 === 0) {
-            this.particles = this.particles.filter(particle => particle.energy > 0)
+        this.bursts.forEach(burst => {
+            this.render.burst(burst)
+            burst.particles.forEach(drawParticle)
+            if (this.p5.frameCount % 5 === 0) {
+                burst.particles = burst.particles.filter(particle => particle.energy > 0)
+            }
+        })
+        if (this.p5.frameCount % 50 === 0) {
+            this.bursts = this.bursts.filter(burst => burst.particles.length > 0)
         }
     }
     addNode(node, anchor) {
@@ -56,16 +64,17 @@ export default class MyWorld {
     }
     addBurst(position, color) {
         const burst = new Burst(position, color)
-        this.particles = [...this.particles, ...burst.createParticles()]
+        this.bursts = [...this.bursts, burst]
     }
     addAnchor() {
-        const body = this.Matter.Bodies.circle(this.width / 2, 0, 10, {isStatic: true})
+        const body = this.Matter.Bodies.circle(this.width / 2, 0, 10, {
+            isStatic: true
+        })
         this.Matter.World.add(this.engine.world, body)
         this.anchor = body
     }
     linkToAnchor(body) {
         this.addAnchor()
-        console.log(this.anchor);
         const constraint = this.Matter.Constraint.create({
             bodyA: body.body,
             bodyB: this.anchor,
@@ -94,7 +103,6 @@ export default class MyWorld {
                 this.Matter.Composite.remove(this.engine.world, node.body)
             }
         }
-        // this.anchor.
         setTimeout(deleteNode(node), 500)
     }
     clear() {
