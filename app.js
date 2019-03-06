@@ -9,3 +9,5 @@ app.get('/',(req, res) => {
 })
 
 app.listen(8080)
+
+module.exports = app;
