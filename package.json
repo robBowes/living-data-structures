@@ -2,14 +2,21 @@
   "name": "datastructures",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "author": "Robert Bowes",
   "license": "ISC",
   "devDependencies": {
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
   }
 }

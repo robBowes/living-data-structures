@@ -1,8 +1,8 @@
-import MyWorld from "./src/my-world.js"
-import Stack from "./src/stack.js"
-import Queue from "./src/queue.js"
-import Listeners from "./src/listeners.js"
-import {randomColour} from "./src/utils.js"
+import MyWorld from "./my-world.js"
+import Stack from "./stack.js"
+import Queue from "./queue.js"
+import Listeners from "./listeners.js"
+import {randomColour} from "./utils.js"
 
 const canvas = document.querySelector("#sketch")
 const canvasAttrs = canvas.getBoundingClientRect()
