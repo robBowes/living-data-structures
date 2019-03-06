@@ -1,4 +1,5 @@
 import Stack from "./stack.js"
+import {randomColour} from "./utils.js"
 export default class Queue extends Stack {
     constructor(world, listeners) {
         super(world, listeners)
@@ -6,18 +7,14 @@ export default class Queue extends Stack {
         this.world = world
         listeners.KeyR = this.pop.bind(this)
         listeners.KeyA = this.keyA.bind(this)
+        this.push = this.push.bind(this)
         this.anchor = this.world.addAnchor(this.rootX, this.rootY)
     }
     keyA() {
-        const color = () => Math.round(Math.random()*255)
-        this.add([
-            color(),
-            color(),
-            color(),
-        ])
+        this.push(randomColour())
     }
     push(value) {
-        this.add(value)
+        super.add(value)
     }
     pop() {
         if (!this.root) return

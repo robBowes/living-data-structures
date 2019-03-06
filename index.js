@@ -2,6 +2,7 @@ import MyWorld from "./src/my-world.js"
 import Stack from "./src/stack.js"
 import Queue from "./src/queue.js"
 import Listeners from "./src/listeners.js"
+import {randomColour} from "./src/utils.js"
 
 const canvas = document.querySelector("#sketch")
 const canvasAttrs = canvas.getBoundingClientRect()
@@ -24,7 +25,7 @@ function sketch(p5) {
     }
     listeners.selectQueue = () => {
         myWorld = new MyWorld(Matter, engine, p5, listeners,WIDTH, HEIGHT)
-        new Queue(myWorld, listeners)
+        const queue = new Queue(myWorld, listeners)
     }
 
     p5.setup = function() {

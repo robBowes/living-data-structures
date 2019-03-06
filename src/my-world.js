@@ -74,7 +74,9 @@ export default class MyWorld {
         this.anchor = body
     }
     linkToAnchor(body) {
-        this.addAnchor()
+        console.log(this.anchor);
+        this.filterConstraints(c => c.bodyA !== this.anchor && c.bodyB !== this.anchor)
+        // this.addAnchor()
         const constraint = this.Matter.Constraint.create({
             bodyA: body.body,
             bodyB: this.anchor,
@@ -95,7 +97,7 @@ export default class MyWorld {
         this.Matter.World.add(this.engine.world, constraint)
     }
     removeNode(node) {
-        this.engine.world.constraints = this.engine.world.constraints.filter(c => c.bodyA.id !== node.body.id && c.bodyB.id !== node.body.id)
+        this.filterConstraints(c => c.bodyA.id !== node.body.id && c.bodyB.id !== node.body.id)
         const deleteNode = node => () => {
             if (this.nodes.length) {
                 this.addBurst(node.body.position, node.value)
@@ -108,5 +110,8 @@ export default class MyWorld {
     clear() {
         this.engine.world.bodies = []
         this.engine.world.constraints = []
+    }
+    filterConstraints(pred) {
+        this.engine.world.constraints = this.engine.world.constraints.filter(pred)
     }
 }
