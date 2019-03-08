@@ -4,8 +4,11 @@ export default class Listeners {
     constructor(canvas) {
         canvas.addEventListener("click", event => {
             console.log(event)
-            if (this.click) {
-                this.click(event)
+            if (this.clickTop && this.clickBottom) {
+                if (event.clientY > canvas.getBoundingClientRect().height / 2)
+                    this.clickTop(event, "up")
+                else
+                    this.clickBottom(event)
             }
         })
         document.addEventListener("keydown", (event) => {
