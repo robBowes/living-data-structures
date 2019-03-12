@@ -17,11 +17,10 @@ function sketch(p5) {
     Bodies = Matter.Bodies
     
     const engine = Engine.create()
-    let myWorld 
+    let myWorld = new MyWorld(Matter, engine, p5, listeners, WIDTH, HEIGHT)
 
     listeners.selectStack = () => {
-        myWorld = new MyWorld(Matter, engine, p5, listeners, WIDTH, HEIGHT)
-        new Stack(myWorld, listeners)
+        myWorld.linkListeners(new Stack())
     }
     listeners.selectQueue = () => {
         myWorld = new MyWorld(Matter, engine, p5, listeners,WIDTH, HEIGHT)

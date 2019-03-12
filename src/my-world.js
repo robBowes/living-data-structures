@@ -1,12 +1,14 @@
 import Burst from "./burst.js"
 import Particle from './particle.js'
+import {randomColour} from "./utils.js"
+import Stack from './stack.js'
 
 
 const render = p5 => ({
-    "Circle Body"(node) {
-        p5.stroke(...node.value)
-        p5.fill(node.value)
-        p5.ellipse(node.body.position.x, node.body.position.y, 10, 10)
+    "Circle Body"(body) {
+        p5.stroke(...body.node.value)
+        p5.fill(body.node.value)
+        p5.ellipse(body.position.x, body.position.y, 10, 10)
     },
     "Constraint"(constraint) {
         const {
@@ -32,15 +34,16 @@ export default class MyWorld {
         this.render = render(p5)
         this.bursts = []
         listeners.clear = this.clear.bind(this)
-        this.nodes = []
+        this.bodies = []
         this.constraints = []
         this.width = width
         this.height = height
         this.addAnchor.bind(this)
+        this.listeners = listeners
     }
     draw() {
         this.engine.world.constraints.forEach(constraint => this.render[constraint.label](constraint))
-        this.nodes.forEach(node => this.render[node.body.label](node))
+        this.bodies.forEach(body => this.render[body.label](body))
         const drawParticle = particle => {
             Particle.update(particle)
             this.render.particle(particle)
@@ -56,11 +59,12 @@ export default class MyWorld {
             this.bursts = this.bursts.filter(burst => burst.particles.length > 0)
         }
     }
-    addNode(node, anchor) {
+    addNode(node) {
         const body = this.Matter.Bodies.circle(this.p5.mouseX, this.p5.mouseY, 10)
         this.Matter.World.add(this.engine.world, body)
-        node.body = body
-        this.nodes = [...this.nodes, node]
+        body.node = node
+        this.bodies = [...this.bodies, body]
+        return body
     }
     addBurst(position, color) {
         const burst = new Burst(position, color)
@@ -75,10 +79,11 @@ export default class MyWorld {
     }
     linkToAnchor(body) {
         console.log(this.anchor);
+        console.log(body);
         this.filterConstraints(c => c.bodyA !== this.anchor && c.bodyB !== this.anchor)
         // this.addAnchor()
         const constraint = this.Matter.Constraint.create({
-            bodyA: body.body,
+            bodyA: body,
             bodyB: this.anchor,
             damping: 0.1,
             length: 20,
@@ -88,8 +93,8 @@ export default class MyWorld {
     }
     linkNodes(first, second) {
         const constraint = this.Matter.Constraint.create({
-            bodyA: first.body,
-            bodyB: second.body,
+            bodyA: first,
+            bodyB: second,
             damping: 0.1,
             length: 20,
             stiffness: 0.3,
@@ -97,12 +102,12 @@ export default class MyWorld {
         this.Matter.World.add(this.engine.world, constraint)
     }
     removeNode(node) {
-        this.filterConstraints(c => c.bodyA.id !== node.body.id && c.bodyB.id !== node.body.id)
-        const deleteNode = node => () => {
-            if (this.nodes.length) {
-                this.addBurst(node.body.position, node.value)
-                this.nodes = this.nodes.filter(n => n !== node)
-                this.Matter.Composite.remove(this.engine.world, node.body)
+        this.filterConstraints(c => c.bodyA.id !== node.id && c.bodyB.id !== node.id)
+        const deleteNode = body => () => {
+            if (this.bodies.length) {
+                this.addBurst(body.position, body.node.value)
+                this.bodies = this.bodies.filter(n => n !== node)
+                this.Matter.Composite.remove(this.engine.world, body)
             }
         }
         setTimeout(deleteNode(node), 500)
@@ -113,5 +118,33 @@ export default class MyWorld {
     }
     filterConstraints(pred) {
         this.engine.world.constraints = this.engine.world.constraints.filter(pred)
+    }
+    linkListeners(obj) {
+        if (obj instanceof Stack) {
+            const add = () => {
+                if (obj.length === 0) {
+                    this.addAnchor(obj.rootX, obj.rootY)
+                    const node = obj.add(randomColour())
+                    this.linkToAnchor(this.addNode(node))
+                } else {
+                    const node = obj.add(randomColour())
+                    const body = this.addNode(node)
+                    this.linkNodes(this.findBody(node.previous.id), body)
+                }
+            }
+            const remove = () => {
+                if(obj.length > 0) {
+                    const node = obj.remove()
+                    this.removeNode(this.findBody(node.id))
+                }
+            }
+            this.listeners.KeyA = add
+            this.listeners.KeyR = remove
+            this.listeners.clickTop = add
+            this.listeners.clickBottom = remove
+        }
+    }
+    findBody(id) {
+        return this.bodies.find(body => body.node.id === id)
     }
 }

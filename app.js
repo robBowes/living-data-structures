@@ -15,14 +15,23 @@ app.get('/',(req, res) => {
 
 app.get(/[\S]+css$/,(req, res) => {
     const src = fs.createReadStream('./src/' + req.url, 'utf8')
-    res.writeHead(200, { 'Content-Encoding': 'gzip' })
-    src.pipe(zlib.createGzip()).pipe(res)
+    res.writeHead(200, { 'Content-Encoding': 'gzip', 'Content-Type': 'text/css' })
+    src.pipe(zlib.createGzip())
+        .pipe(res)
 })
 
 app.get(/[\S]+js$/,(req, res) => {
     const src = fs.createReadStream('./src/' + req.url, 'utf8')
     res.writeHead(200, { 'Content-Encoding': 'gzip', 'Content-Type': 'text/javascript' })
-    src.pipe(zlib.createGzip()).pipe(res)
+    src.pipe(zlib.createGzip())
+        .pipe(res)
+})
+
+app.get(/[\S]+json$/,(req, res) => {
+    const src = fs.createReadStream('./' + req.url, 'utf8')
+    res.writeHead(200, { 'Content-Encoding': 'gzip', 'Content-Type': 'text/json' })
+    src.pipe(zlib.createGzip())
+        .pipe(res)
 })
 
 app.get('/:route',(req, res) => {
@@ -31,7 +40,7 @@ app.get('/:route',(req, res) => {
 
 
 if (module === require.main) {
-    app.listen(8080)
+    app.listen(8080, () => console.log("App listening on port: 8080..."))
 }
 
 module.exports = app
