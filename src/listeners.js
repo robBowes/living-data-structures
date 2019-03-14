@@ -31,6 +31,12 @@ export default class Listeners {
             }
             this.clear()
         })
+        window.myApp = {
+            clickPriorityQueue: () =>  {
+                if (this.selectPriorityQueue) {
+                    this.selectPriorityQueue()
+                }
+        }}
         this.descriptionContainer = document.querySelector(".data-structure-description")
     }
     showDescription(type) {

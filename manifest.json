@@ -1,0 +1,8 @@
+{
+    "name": "Living Data Structures",
+    "theme_color": "#060606",
+    "background_color": "#2196f3",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/"
+  }

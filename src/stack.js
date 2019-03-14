@@ -1,40 +1,39 @@
-class Node {
-    constructor(value, next, previous) {
-        this.value = value
-        this.next = next
-        this.previous = previous
-        this.id = Date.now()
-    }
-}
+import List from './list.js'
+import Node from './node.js'
 
-export default class Stack {
+export default class Stack extends List {
     constructor() {
-        this.root = null
-        this.Node = Node
-        this.length = 0
+        super()    
+        this.type = "Stack"
     }
     add(value) {
         this.length ++
         if (!this.root) {
-            this.root = new Node(value, null, null)
-            return this.root
+            const node = new Node(value, null, null)
+            this.root = node
+            this.tail = node
+            return node
         } else {
-            const tail = this.findTail(this.root)
-            const node = new Node(value, null, tail)
-            tail.next = node
+            const node = new Node(value, null, this.tail)
+            this.tail.next = node
+            this.tail = node
             return node
         }
     }
     remove() {
         if (!this.root || !this.root.next) return
         this.length--
-        const tail = this.findTail(this.root)
+        const tail = this.tail
         if (tail.previous)
             tail.previous.next = null
+        this.tail = tail.previous
         return tail
     }
     findTail(node) {
         if (!node.next) return node
         return this.findTail(node.next)
+    }
+    getTail() {
+        return this.findTail(this.root)
     }
 }

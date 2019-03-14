@@ -1,4 +1,12 @@
+// const rand = () => Math.floor(Math.random() * 255)
+export function randomGrey() {
+    return Math.floor(Math.random() * 255)
+}
 export function randomColour() {
-    const rand = () => Math.floor(Math.random() * 255)
-    return [rand(), rand(), rand()]
+    return [randomGrey(), randomGrey(), randomGrey()]
+}
+
+export function trace (arg) {
+    console.log(arg)
+    return arg
 }

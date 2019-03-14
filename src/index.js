@@ -1,45 +1,60 @@
 import MyWorld from "./my-world.js"
 import Stack from "./stack.js"
 import Queue from "./queue.js"
+import PriorityQueue from "./priority-queue.js"
 import Listeners from "./listeners.js"
+import {draw} from "./draw.js"
 import {randomColour} from "./utils.js"
 
 const canvas = document.querySelector("#sketch")
 const canvasAttrs = canvas.getBoundingClientRect()
+const HEIGHT = canvasAttrs.height
+const WIDTH = canvasAttrs.width
 
 const listeners = new Listeners(canvas)
 
 function sketch(p5) {
-    const HEIGHT = canvasAttrs.height
-    const WIDTH = canvasAttrs.width
-    const Engine = Matter.Engine,
-    World = Matter.World,
-    Bodies = Matter.Bodies
     
-    const engine = Engine.create()
-    let myWorld = new MyWorld(Matter, engine, p5, listeners, WIDTH, HEIGHT)
-
+    const engine = Matter.Engine.create()
+    const render = draw(p5)
+    let myWorld
+    
     listeners.selectStack = () => {
-        myWorld.linkListeners(new Stack())
+        myWorld = new MyWorld({Matter, engine, listeners,p5, WIDTH, HEIGHT, dataType: new Stack()})
     }
     listeners.selectQueue = () => {
-        myWorld = new MyWorld(Matter, engine, p5, listeners,WIDTH, HEIGHT)
-        const queue = new Queue(myWorld, listeners)
+        myWorld = new MyWorld({Matter, engine, listeners,p5,WIDTH, HEIGHT, dataType: new Queue()})
     }
+    listeners.selectPriorityQueue = () => {
+        myWorld = new MyWorld({
+            Matter,
+            engine,
+            listeners,
+            p5,
+            WIDTH,
+            HEIGHT,
+            dataType: new PriorityQueue((a, b) => a.value > b.value )
+        })
+    }
+    
 
     p5.setup = function() {
         p5.createCanvas(WIDTH, HEIGHT)
         p5.background(0)
         p5.frameRate(25)
-        Engine.run(engine)
+        Matter.Engine.run(engine)
+        
     }
     
     p5.draw = function() {
         p5.background(0);
         if (myWorld) {
-            myWorld.draw()
+            render(myWorld)
         }
+        
     }
 }
 
-new p5(sketch, canvas)
+const p5Canvas = new p5(sketch, canvas)
+
+window.p5Canvas = p5Canvas
